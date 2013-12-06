@@ -1,0 +1,40 @@
+﻿using UnityEngine;
+using System.Collections;
+
+public class FollowSpaceShip : MonoBehaviour
+{
+
+    
+    public Transform target;
+    public float distance = 10f;
+    public float height = 3.0f;
+    public float damping = 2f;
+    bool smoothRotation = true;
+    public float rotationDamping = 10.0f;
+
+    void SetTarget(Transform playerPos)
+    {
+        target = playerPos;
+    }
+
+    void Update()
+    {
+        Vector3 wantedPosition = target.TransformPoint(0, height, -distance);
+        transform.position = Vector3.Lerp(transform.position, wantedPosition, Time.deltaTime * damping);
+
+        if (smoothRotation)
+        {
+            Quaternion wantedRotation = Quaternion.LookRotation(target.position - transform.position, target.up);
+            transform.rotation = Quaternion.Slerp(transform.rotation, wantedRotation, Time.deltaTime * rotationDamping);
+        }
+
+        else transform.LookAt(target, target.up);
+    }
+    // Use this for initialization
+    void Start()
+    {
+
+    }
+
+  
+}
