@@ -3,23 +3,35 @@ using System.Collections;
 
 public class TestPlayer : MonoBehaviour {
     public int PlayerHP = 100;
-    public Transform Spawnpoint;
     float Speed = 0f;
     float Thruster;
     float Turn;
     public float RotationAngle = 60f;
     public float RotationSpeed;
     float yRot, xRot;
+    public int PlayerNumber;
+    public GameObject Explosion;
+    Transform mySpawnPoint;
 
+    public void SetPlayerNumber(int i)
+    {
+        PlayerNumber = i;
+    }
 
     public void SetSpawnPoint(Transform spawn)
     {
-        Spawnpoint = spawn;
+        mySpawnPoint = spawn;
     }
 
     public void SetHealth(int health)
     {
         PlayerHP += health;
+        if(PlayerHP <= 0){
+            
+            Instantiate(Explosion, transform.position, transform.rotation);
+            transform.position = mySpawnPoint.position;
+            transform.rotation = mySpawnPoint.rotation;
+        }
     }
 
     [System.Serializable]
@@ -93,7 +105,7 @@ public class TestPlayer : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-       
+     
     }
 
     // Update is called once per frame
@@ -158,9 +170,23 @@ public class TestPlayer : MonoBehaviour {
     void OnGUI()
     {
         GUI.Label(new Rect(10,10,100,50), Speed.ToString());
+
+        if (GameManager.playerCount > 2)
+        {
+            if (PlayerNumber == 0)
+                GUI.Label(new Rect(Screen.width / 4, Screen.height /2, 100, 50), PlayerHP.ToString());
+            else if (PlayerNumber == 1)
+                GUI.Label(new Rect(Screen.width / 4 * 3, Screen.height / 2, 100, 50), PlayerHP.ToString());
+            else if (PlayerNumber == 2)
+                GUI.Label(new Rect(Screen.width / 4 * 3, 0, 100, 50), PlayerHP.ToString());
+            else if (PlayerNumber == 3)
+                GUI.Label(new Rect(Screen.width / 4, 0 , 100, 50), PlayerHP.ToString());
+        }
+        
     }
     void Reset()
     {
+        RotationSpeed = 1f;
         // Set some nice default values for our MovementSettings.
         // Of course, it is always best to tweak these for your specific game.
         positionalMovement.maxSpeed = 3.0f;

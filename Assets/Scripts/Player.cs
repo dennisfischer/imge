@@ -5,7 +5,6 @@ using System.Collections;
 public class Player : MonoBehaviour {
     public int PlayerHP = 100;
     public int PlayerNumber;
-    Transform Spawnpoint;
     string[] Controllers = { "COM3", "COM4", "COM5", "COM6" };
     public Controller myController;
     float RightThruster, LeftThruster;
@@ -15,7 +14,26 @@ public class Player : MonoBehaviour {
     public float RotationSpeed;
     float yRot, xRot;
     public float ThrusterRotation = 200f;
+    public GameObject Explosion;
+    Transform mySpawnPoint;
 
+
+    void OnGUI()
+    {
+
+        if (GameManager.playerCount > 2)
+        {
+            if (PlayerNumber == 0)
+                GUI.Label(new Rect(Screen.width / 4, Screen.height / 2, 100, 50), PlayerHP.ToString());
+            else if (PlayerNumber == 1)
+                GUI.Label(new Rect(Screen.width / 4 * 3, Screen.height / 2, 100, 50), PlayerHP.ToString());
+            else if (PlayerNumber == 2)
+                GUI.Label(new Rect(Screen.width / 4 * 3, 0, 100, 50), PlayerHP.ToString());
+            else if (PlayerNumber == 3)
+                GUI.Label(new Rect(Screen.width / 4, 0, 100, 50), PlayerHP.ToString());
+        }
+
+    }
     public void SetPlayerNumber(int i)
     {
         PlayerNumber = i;
@@ -23,12 +41,22 @@ public class Player : MonoBehaviour {
 
     public void SetSpawnPoint(Transform spawn)
     {
-        Spawnpoint = spawn;
+        mySpawnPoint = spawn;
     }
 
     public void SetHealth(int health)
     {
         PlayerHP += health;
+        if (PlayerHP <= 0)
+        {
+            collider.enabled = false;
+            Instantiate(Explosion, transform.position, transform.rotation);
+            transform.position = mySpawnPoint.position;
+            transform.rotation = mySpawnPoint.rotation;
+            PlayerHP = 100;
+            collider.enabled = true;
+
+        }
     }
 
     [System.Serializable]
@@ -37,13 +65,13 @@ public class Player : MonoBehaviour {
         public GameObject[] Position;
         public GameObject Projectile;
         public float ReloadTime = 0.5f;
-        public float Timer;
+        private float Timer;
 
         public void Shoot()
         {
             if(Timer <= 0f){
                foreach(GameObject position in Position){
-                 Instantiate(Projectile, position.transform.position, position.transform.rotation);
+                   Instantiate(Projectile, position.transform.position, position.transform.rotation);
                  Timer = ReloadTime;
               }
             }
@@ -118,7 +146,7 @@ public class Player : MonoBehaviour {
 
         yRot = -(myController.yAcc) * RotationAngle;
         xRot = myController.xAcc * RotationAngle;
-        transform.Rotate(Vector3.up, Time.deltaTime * yRot * RotationSpeed);
+        transform.Rotate(Vector3.up, Time.deltaTime * yRot * RotationSpeed/2);
         //transform.Rotate(Vector3.forward * Time.deltaTime * zRot);
         transform.Rotate(Vector3.right, Time.deltaTime * xRot * RotationSpeed);
          
@@ -157,7 +185,7 @@ public class Player : MonoBehaviour {
         // Always modify your forces by Time.deltaTime in FixedUpdate (), so if you ever need to change your Time.fixedTime setting,
         // your setup won't break.
 
-        rigidbody.AddRelativeTorque(Vector3.up * Turn);
+        //rigidbody.AddRelativeTorque(Vector3.up * Turn);
         rigidbody.AddRelativeForce(Vector3.forward * Thruster, ForceMode.Acceleration);
     }
 

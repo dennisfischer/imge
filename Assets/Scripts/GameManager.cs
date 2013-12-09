@@ -1,27 +1,42 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class GameManager : MonoBehaviour {
+public class GameManager
+{
+    private static GameManager instance;
     public static int playerCount = 0;
-    ObjectManager objManager;
+    public static int TeamSize = 10;
+    public static int[] TeamScores= new int[4];
 
-	// Use this for initialization
-	void Start () {
-        
-        GameObject.DontDestroyOnLoad(gameObject);
-	}
+    private GameManager() {
+        if (instance != null)
+            return;
+        else
+            instance = this;
+    
+    }
+
+    public static GameManager Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = new GameManager();
+            }
+            return instance;
+        }
+    }
 
     public static void SetPlayerCount(int c)
     {
         playerCount = c;
     }
 
-      
-                
-    
+    public static void setTeamScores(int i)
+    {
+        TeamScores[i]++;
+    }
 
-	// Update is called once per frame
-	void Update () {
-	
-	}
+
 }
