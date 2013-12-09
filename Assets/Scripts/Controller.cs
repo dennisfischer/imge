@@ -190,6 +190,14 @@ public class Controller : MonoBehaviour
         LEDOff(2);
         LEDOff(3);
     }
+
+    public void TurnOff()
+    {
+        TurnOffMotor();
+        TurnOffLEDs();
+        stream.Close();
+    }
+
     void OnApplicationQuit()
     {
 

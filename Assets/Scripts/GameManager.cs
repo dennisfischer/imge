@@ -6,7 +6,7 @@ public class GameManager
     private static GameManager instance;
     public static int playerCount = 0;
     public static int TeamSize = 10;
-    public static int[] TeamScores= new int[4];
+    public static int[] TeamScores= {500,500,500,500};
 
     private GameManager() {
         if (instance != null)
@@ -35,7 +35,7 @@ public class GameManager
 
     public static void setTeamScores(int i)
     {
-        TeamScores[i]++;
+        TeamScores[i]--;
     }
 
 

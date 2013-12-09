@@ -3,7 +3,7 @@ using System.Collections;
 
 //blue,red, yellow, green
 public class Player : MonoBehaviour {
-    public int PlayerHP = 100;
+    private int PlayerHP = 100;
     public int PlayerNumber;
     string[] Controllers = { "COM3", "COM4", "COM5", "COM6" };
     public Controller myController;
@@ -16,7 +16,7 @@ public class Player : MonoBehaviour {
     public float ThrusterRotation = 200f;
     public GameObject Explosion;
     Transform mySpawnPoint;
-
+    public Renderer[] childObjects = new Renderer[5];
 
     void OnGUI()
     {
@@ -24,13 +24,28 @@ public class Player : MonoBehaviour {
         if (GameManager.playerCount > 2)
         {
             if (PlayerNumber == 0)
+            {
                 GUI.Label(new Rect(Screen.width / 4, Screen.height / 2, 100, 50), PlayerHP.ToString());
+                GUI.Label(new Rect(Screen.width / 4, Screen.height / 2 + 20, 100, 50), LaserCannon.Ammo.ToString());
+            }
+
             else if (PlayerNumber == 1)
+            {
                 GUI.Label(new Rect(Screen.width / 4 * 3, Screen.height / 2, 100, 50), PlayerHP.ToString());
+                GUI.Label(new Rect(Screen.width / 4 * 3, Screen.height / 2 + 20, 100, 50), LaserCannon.Ammo.ToString());
+            }
+
             else if (PlayerNumber == 2)
+            {
                 GUI.Label(new Rect(Screen.width / 4 * 3, 0, 100, 50), PlayerHP.ToString());
+                GUI.Label(new Rect(Screen.width / 4 * 3, 0 + 20, 100, 50), LaserCannon.Ammo.ToString());
+            }
+
             else if (PlayerNumber == 3)
+            {
                 GUI.Label(new Rect(Screen.width / 4, 0, 100, 50), PlayerHP.ToString());
+                GUI.Label(new Rect(Screen.width / 4, 0 + 20, 100, 50), LaserCannon.Ammo.ToString());
+            }
         }
 
     }
@@ -44,17 +59,32 @@ public class Player : MonoBehaviour {
         mySpawnPoint = spawn;
     }
 
+    IEnumerator DestroyShip()
+    {
+        Instantiate(Explosion, transform.position, transform.rotation);
+        gameObject.collider.enabled = false;
+        foreach (Renderer rend in childObjects)
+        {
+            rend.enabled = false;
+        }
+        yield return new WaitForSeconds(3f);
+        transform.position = mySpawnPoint.position;
+        transform.rotation = mySpawnPoint.rotation;
+        PlayerHP = 100;
+        gameObject.collider.enabled = true;
+        foreach (Renderer rend in childObjects)
+        {
+            rend.enabled = true;
+        }
+        
+    }
+
     public void SetHealth(int health)
     {
         PlayerHP += health;
         if (PlayerHP <= 0)
         {
-            collider.enabled = false;
-            Instantiate(Explosion, transform.position, transform.rotation);
-            transform.position = mySpawnPoint.position;
-            transform.rotation = mySpawnPoint.rotation;
-            PlayerHP = 100;
-            collider.enabled = true;
+            StartCoroutine(DestroyShip());     
 
         }
     }
@@ -66,17 +96,33 @@ public class Player : MonoBehaviour {
         public GameObject Projectile;
         public float ReloadTime = 0.5f;
         private float Timer;
+        public int Ammo = 100;
+        public int ReloadValue = 0;
+        int[] ReloadNumber = {0 , 2};
 
         public void Shoot()
         {
-            if(Timer <= 0f){
+            if(Timer <= 0f && Ammo > 0){
                foreach(GameObject position in Position){
-                   Instantiate(Projectile, position.transform.position, position.transform.rotation);
+                 Instantiate(Projectile, position.transform.position, position.transform.rotation);
                  Timer = ReloadTime;
+                 Ammo--;
+                 
               }
             }
             
         }
+        public void Reload(int i)
+        {
+            if (Ammo <= 0 && i == ReloadNumber[ReloadValue])
+            {
+                Ammo = 104;
+                ReloadValue++;
+                ReloadValue %= 2;
+            }
+                  
+        }
+        
         public void CheckTime()
         {
             Timer -= Time.deltaTime;
@@ -138,8 +184,14 @@ public class Player : MonoBehaviour {
         myController.CheckAccelerator();
         myController.CheckButtons();
 
-
-
+        if(myController.GetTurner(0) + myController.GetTurner(1) == 2){
+            LaserCannon.Reload(2);
+        }
+        if (myController.GetTurner(0) + myController.GetTurner(1) == 0)
+        {
+            LaserCannon.Reload(0);
+        }
+        
         LeftThruster = myController.GetSlider(0);
         RightThruster = myController.GetSlider(1);
 
@@ -216,6 +268,6 @@ public class Player : MonoBehaviour {
 
     void OnApplicationQuit()
     {
-        //myController.TurnOffLEDs();
+        myController.TurnOff();
     }
 }

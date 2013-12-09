@@ -41,16 +41,19 @@ public class TestPlayer : MonoBehaviour {
         public GameObject Projectile;
         public float ReloadTime = 0.5f;
         public float Timer;
+        public int Ammo = 104;
 
         public void Shoot()
         {
-            if (Timer <= 0f)
+            if (Timer <= 0f && Ammo > 0)
             {
                 foreach (GameObject position in Position)
                 {
                     Instantiate(Projectile, position.transform.position, position.transform.rotation);
                     Timer = ReloadTime;
+                    Ammo--;
                 }
+               
             }
 
         }
@@ -173,14 +176,27 @@ public class TestPlayer : MonoBehaviour {
 
         if (GameManager.playerCount > 2)
         {
-            if (PlayerNumber == 0)
+            if (PlayerNumber == 0){
                 GUI.Label(new Rect(Screen.width / 4, Screen.height /2, 100, 50), PlayerHP.ToString());
-            else if (PlayerNumber == 1)
+                GUI.Label(new Rect(Screen.width / 4, Screen.height /2 , 100, 50), LaserCannon.Ammo.ToString());
+            }
+                
+            else if (PlayerNumber == 1){
                 GUI.Label(new Rect(Screen.width / 4 * 3, Screen.height / 2, 100, 50), PlayerHP.ToString());
-            else if (PlayerNumber == 2)
+                GUI.Label(new Rect(Screen.width / 4 * 3, Screen.height / 2 , 100, 50), LaserCannon.Ammo.ToString());
+            }
+                
+            else if (PlayerNumber == 2){
                 GUI.Label(new Rect(Screen.width / 4 * 3, 0, 100, 50), PlayerHP.ToString());
+                GUI.Label(new Rect(Screen.width / 4 * 3, 0 , 100, 50), LaserCannon.Ammo.ToString());
+            }
+
             else if (PlayerNumber == 3)
-                GUI.Label(new Rect(Screen.width / 4, 0 , 100, 50), PlayerHP.ToString());
+            {
+                GUI.Label(new Rect(Screen.width / 4, 0, 100, 50), PlayerHP.ToString());
+                GUI.Label(new Rect(Screen.width / 4, 0 , 100, 50), LaserCannon.Ammo.ToString());
+            }
+                
         }
         
     }

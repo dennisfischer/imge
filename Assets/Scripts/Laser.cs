@@ -5,6 +5,7 @@ public class Laser : MonoBehaviour {
     public float LaserSpeed;
     public int Damage = 10;
     public GameObject Sparks;
+    public int TeamNumber;
 
 	// Use this for initialization
 	void Start () {
@@ -21,7 +22,13 @@ public class Laser : MonoBehaviour {
     void OnCollisionEnter(Collision other)
     {
         //Time.timeScale = 0;
-        other.gameObject.SendMessage("SetHealth", -Damage, SendMessageOptions.DontRequireReceiver);
+        if (other.gameObject.GetComponent<Player>() != null)
+        {
+            Player playerhit = (Player)other.gameObject.GetComponent<Player>();
+            playerhit.SetHealth(-Damage);
+        }
+        
+        //other.gameObject.SendMessage("SetHealth", -Damage, SendMessageOptions.DontRequireReceiver);
         Instantiate(Sparks, transform.position, transform.rotation);
         Destroy(gameObject);
     }
