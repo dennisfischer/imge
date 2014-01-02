@@ -4,9 +4,9 @@ using System.Collections;
 public class GameManager
 {
     private static GameManager instance;
-    public static int playerCount = 0;
-    public static int TeamSize = 10;
-    public static int[] TeamScores= {500,500,500,500};
+    public int playerCount = 0;
+    public int TeamSize = 5;
+    private int[] TeamScores= {0,0,0,0};
 
     private GameManager() {
         if (instance != null)
@@ -28,14 +28,19 @@ public class GameManager
         }
     }
 
-    public static void SetPlayerCount(int c)
+    public void SetPlayerCount(int c)
     {
         playerCount = c;
     }
 
-    public static void setTeamScores(int i)
+    public void setTeamScores(int i)
     {
-        TeamScores[i]--;
+        TeamScores[i]++;
+    }
+
+    public int getTeamScores(int i)
+    {
+        return TeamScores[i];
     }
 
 

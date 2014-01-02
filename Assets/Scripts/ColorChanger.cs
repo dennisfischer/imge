@@ -17,9 +17,9 @@ public class ColorChanger : MonoBehaviour
         
         float offset = transform.position.magnitude / 3;
 
-        float r = Mathf.Abs(Mathf.Sin(Time.timeSinceLevelLoad + offset));
-        float g = Mathf.Abs(Mathf.Sin(Time.timeSinceLevelLoad * 0.45f + offset));
-        float b = Mathf.Abs(Mathf.Sin(Time.timeSinceLevelLoad * 1.2f + offset));
+        float r = Mathf.Abs(Mathf.Sin(Time.timeSinceLevelLoad/10 + offset));
+        float g = Mathf.Abs(Mathf.Sin(Time.timeSinceLevelLoad / 10 * 0.45f + offset));
+        float b = Mathf.Abs(Mathf.Sin(Time.timeSinceLevelLoad / 10 * 1.2f + offset));
         Color newColor = new Color(r, g, b);
         gameObject.renderer.material.color = newColor;
         for (int i = 0; i < meshColors.Length; ++i)
