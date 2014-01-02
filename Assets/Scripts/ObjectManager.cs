@@ -120,31 +120,32 @@ public class ObjectManager : MonoBehaviour
                     }
                 }
             }
+        
+         for (int i = 4 - GameManager.Instance.playerCount; i > 0; i--)
+         {
+             GameObject newSpawn = (GameObject)Instantiate(Spawnpoints[i], Spawnpoints[i].transform.position + new Vector3(0, spawnOffset, 0), Spawnpoints[i].transform.rotation);
+             GameObject ki = (GameObject)Instantiate(AI[i], newSpawn.transform.position, Spawnpoints[i].transform.rotation);
+             //GameObject tar = (GameObject)Instantiate(targeter, Spawnpoints[i].transform.position, Spawnpoints[i].transform.rotation);
+             AI _ki = ki.GetComponent<AI>();
+             _ki.SetPlayerNumber(i);
+             _ki.SetSpawnPoint(newSpawn.transform);
 
-            for (int i = 4 - GameManager.Instance.playerCount; i > 0; i--)
-            {
-                GameObject newSpawn = (GameObject)Instantiate(Spawnpoints[i], Spawnpoints[i].transform.position + new Vector3(0, spawnOffset, 0), Spawnpoints[i].transform.rotation);
-                GameObject ki = (GameObject)Instantiate(AI[i], newSpawn.transform.position, Spawnpoints[i].transform.rotation);
-                //GameObject tar = (GameObject)Instantiate(targeter, Spawnpoints[i].transform.position, Spawnpoints[i].transform.rotation);
-                AI _ki = ki.GetComponent<AI>();
-                _ki.SetPlayerNumber(i);
-                _ki.SetSpawnPoint(newSpawn.transform);
 
+            newSpawn = (GameObject)Instantiate(Spawnpoints[i], Spawnpoints[i].transform.position + new Vector3(0, -spawnOffset, 0), Spawnpoints[i].transform.rotation);
+             ki = (GameObject)Instantiate(AI[i], newSpawn.transform.position, Spawnpoints[i].transform.rotation);
+             //GameObject tar = (GameObject)Instantiate(targeter, Spawnpoints[i].transform.position, Spawnpoints[i].transform.rotation);
+             _ki = ki.GetComponent<AI>();
+             _ki.SetPlayerNumber(i);
+             _ki.SetSpawnPoint(newSpawn.transform);
 
-                newSpawn = (GameObject)Instantiate(Spawnpoints[i], Spawnpoints[i].transform.position + new Vector3(0, -spawnOffset, 0), Spawnpoints[i].transform.rotation);
-                ki = (GameObject)Instantiate(AI[i], newSpawn.transform.position, Spawnpoints[i].transform.rotation);
-                //GameObject tar = (GameObject)Instantiate(targeter, Spawnpoints[i].transform.position, Spawnpoints[i].transform.rotation);
-                _ki = ki.GetComponent<AI>();
-                _ki.SetPlayerNumber(i);
-                _ki.SetSpawnPoint(newSpawn.transform);
+             newSpawn = (GameObject)Instantiate(Spawnpoints[i], Spawnpoints[i].transform.position, Spawnpoints[i].transform.rotation);
+             ki = (GameObject)Instantiate(AI[i], newSpawn.transform.position, Spawnpoints[i].transform.rotation);
+             //GameObject tar = (GameObject)Instantiate(targeter, Spawnpoints[i].transform.position, Spawnpoints[i].transform.rotation);
+             _ki = ki.GetComponent<AI>();
+             _ki.SetPlayerNumber(i);
+             _ki.SetSpawnPoint(newSpawn.transform);
 
-                newSpawn = (GameObject)Instantiate(Spawnpoints[i], Spawnpoints[i].transform.position, Spawnpoints[i].transform.rotation);
-                ki = (GameObject)Instantiate(AI[i], newSpawn.transform.position, Spawnpoints[i].transform.rotation);
-                //GameObject tar = (GameObject)Instantiate(targeter, Spawnpoints[i].transform.position, Spawnpoints[i].transform.rotation);
-                _ki = ki.GetComponent<AI>();
-                _ki.SetPlayerNumber(i);
-                _ki.SetSpawnPoint(newSpawn.transform);
-
+               
                 if (Mathf.Abs(Spawnpoints[i].transform.localPosition.x) == 450)
                 {
                     newSpawn = (GameObject)Instantiate(Spawnpoints[i], Spawnpoints[i].transform.position + new Vector3(0, 0, -spawnOffset), Spawnpoints[i].transform.rotation);
@@ -177,6 +178,7 @@ public class ObjectManager : MonoBehaviour
                     _ki.SetPlayerNumber(i);
                     _ki.SetSpawnPoint(newSpawn.transform);
                 }
+                 
             }
     }
 

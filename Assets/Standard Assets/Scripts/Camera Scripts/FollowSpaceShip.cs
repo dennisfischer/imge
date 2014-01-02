@@ -19,9 +19,8 @@ public class FollowSpaceShip : MonoBehaviour
 
     void Update()
     {
-        Vector3 wantedPosition = target.TransformPoint(0, height, -distance);
+        Vector3 wantedPosition = target.TransformPoint(0f, height, -distance);
         transform.position = Vector3.Lerp(transform.position, wantedPosition, Time.deltaTime * damping);
-
         if (smoothRotation)
         {
             Quaternion wantedRotation = Quaternion.LookRotation(target.position - transform.position, target.up);

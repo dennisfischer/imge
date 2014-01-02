@@ -23,6 +23,11 @@ public class Player : MonoBehaviour {
     Transform mySpawnPoint;
     public Renderer[] childObjects = new Renderer[5];
 
+    public AudioClip explosionSound;
+    public AudioClip laserSound;
+    public AudioClip missileSound;
+    public AudioClip impactSound;
+
    
     int targetNumber = 0;
     GameObject target;
@@ -138,6 +143,10 @@ public class Player : MonoBehaviour {
 
     public void SetHealth(int health)
     {
+        if (health < 0)
+        {
+            audio.PlayOneShot(impactSound);
+        }
         PlayerHP += health;
 
 
@@ -147,8 +156,11 @@ public class Player : MonoBehaviour {
         else if (LifePercentage > 1f)
             LifePercentage = 1f;
         HUDLife.Animate(LifePercentage);
-        if(PlayerHP <= 0)
+        if (PlayerHP <= 0)
+        {
             StartCoroutine(DestroyShip());
+            audio.PlayOneShot(explosionSound);
+        }
         /*
         if (PlayerHP <= 0)
         {
@@ -179,30 +191,35 @@ public class Player : MonoBehaviour {
         public float ReloadTime = 0.5f;
         public int CurrentAmmo = 100;
         public float RechargeRate = 0.25f;
-
         public int MaxAmmo = 100;
 
         public bool overheated;
         private float Timer;
         private float Timer2;
-        
-        public void Shoot()
+
+        public bool Shoot()
         {
+            bool shooted = false;
             if(Timer <= 0f && CurrentAmmo > 0 && !overheated){
                foreach(GameObject position in Position){
                  Instantiate(Projectile, position.transform.position, position.transform.rotation);
                  Timer = ReloadTime;
                  CurrentAmmo--;
+                 shooted = true;
               }
             }
             if (CurrentAmmo <= 0)
             {
                 overheated = true;
-            } 
+            }
+
+            return shooted;
             
         }
-        public void Shoot(Transform projTarget)
+        public bool Shoot(Transform projTarget)
         {
+            bool shooted = false;
+
             if (Timer <= 0f && CurrentAmmo > 0 && !overheated)
             {
                 foreach (GameObject position in Position)
@@ -212,12 +229,14 @@ public class Player : MonoBehaviour {
                     Missile.GetComponent<Missile>().SetTarget(projTarget);
                     Timer = ReloadTime;
                     CurrentAmmo--;
+                    shooted = true;
                 }
             }
             if (CurrentAmmo <= 0)
             {
                 overheated = true;
             }
+            return shooted;
 
         }
 
@@ -358,14 +377,19 @@ public class Player : MonoBehaviour {
 
             if (Input.GetKey(KeyCode.Space) && weaponState == Weaponstate.Laser)
             {
-                LaserCannon.Shoot();
-                
+                if (LaserCannon.Shoot())
+                {
+                    audio.PlayOneShot(laserSound);
+                }
             }
 
 
             else if (Input.GetKey(KeyCode.Space) && weaponState == Weaponstate.Missile)
             {
-                MissileCannon.Shoot(target.transform);
+                if (MissileCannon.Shoot(target.transform))
+                {
+                    audio.PlayOneShot(missileSound);
+                }
                 
             }
 
