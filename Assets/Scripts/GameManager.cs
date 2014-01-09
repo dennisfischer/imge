@@ -8,6 +8,12 @@ public class GameManager
     public int TeamSize = 5;
     private int[] TeamScores= {0,0,0,0};
 
+    public bool AI
+    {
+        get;
+        set;
+    }
+
     private GameManager() {
         if (instance != null)
             return;

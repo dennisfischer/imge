@@ -5,6 +5,7 @@ public class MainMenu : MonoBehaviour {
     Controller contr;
 	// Use this for initialization
 	void Start () {
+        GameManager.Instance.AI = true;
         contr = (Controller)gameObject.GetComponent("Controller");
         contr.Init("COM3");
 	}
@@ -12,6 +13,15 @@ public class MainMenu : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         contr.CheckButtons();
+        if (contr.GetButtonDown(5))
+        {
+            GameManager.Instance.AI = true;
+        }
+        if (contr.GetButtonDown(6))
+        {
+            GameManager.Instance.AI = false;
+        }
+
         if (contr.GetButtonDown(2))
         {
             GameManager.Instance.SetPlayerCount(1);

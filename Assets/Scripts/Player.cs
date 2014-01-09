@@ -3,7 +3,7 @@ using System.Collections;
 
 //blue,red, yellow, green
 public class Player : MonoBehaviour {
-    float TurnerSimulatorLeft, TurnerSimulatorRight;
+   // float TurnerSimulatorLeft, TurnerSimulatorRight;
     public int PlayerHP = 100;
     public int PlayerNumber;
     public Material GUILife;
@@ -332,9 +332,92 @@ public class Player : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
+        if (myController.GetButtonDown(2) && PlayerNumber == 0)
+        {
+            Application.LoadLevel(0);
+        }
         if (state == PlayerState.Playing)
         {
 
+            myController.CheckSlidersTurners();
+            myController.CheckAccelerator();
+            myController.CheckButtons();
+
+            if (SeekerList.Count > 0)
+            {
+                targetNumber = (int)(myController.GetTurner(0) * SeekerList.Count);
+                targetNumber %= SeekerList.Count;
+                target = (GameObject)SeekerList[targetNumber];
+                if (target.transform)
+                    indicator.GetComponent<Crosshair>().SetTarget(target.transform);
+            }
+
+
+            if (myController.GetTurner(1) == 1f)
+            {
+                weaponState = Weaponstate.Missile;
+            }
+            else if (myController.GetTurner(1) == 0f)
+            {
+                weaponState = Weaponstate.Laser;
+            }
+            LeftThruster = myController.GetSlider(0);
+            RightThruster = myController.GetSlider(1);
+
+
+            yRot = (myController.yAcc) * RotationAngle;
+            xRot = myController.xAcc * RotationAngle;
+            transform.Rotate(Vector3.forward, Time.deltaTime * yRot * RotationSpeed / 2);
+            transform.Rotate(Vector3.right, Time.deltaTime * xRot * RotationSpeed);
+
+            LaserCannon.CheckTime();
+            MissileCannon.CheckTime();
+
+            if ((myController.GetButton(5) || myController.GetButton(6)) && weaponState == Weaponstate.Laser)
+            {
+                if (LaserCannon.Shoot())
+                {
+                    audio.PlayOneShot(laserSound);
+                }
+            }
+
+
+            else if ((myController.GetButton(5) || myController.GetButton(6)) && weaponState == Weaponstate.Missile)
+            {
+                if (target != null)
+                {
+                    if (MissileCannon.Shoot(target.transform))
+                    {
+                        audio.PlayOneShot(missileSound);
+                    }
+                }
+                if (target == null)
+                {
+                    if (MissileCannon.Shoot(null))
+                    {
+                        audio.PlayOneShot(missileSound);
+                    }
+                }
+                
+
+            }
+
+            if (weaponState == Weaponstate.Laser)
+            {
+                if (!LaserCannon.overheated)
+                    HUDWeapon.Animate(1);
+                else if (LaserCannon.overheated)
+                    HUDWeapon.Animate(0.75f);
+            }
+
+            else if (weaponState == Weaponstate.Missile)
+            {
+                if (!MissileCannon.overheated)
+                    HUDWeapon.Animate(0.4f);
+                else if (MissileCannon.overheated)
+                    HUDWeapon.Animate(0f);
+            }
+            /*
             Mathf.Clamp(TurnerSimulatorLeft, 0f, 1f);
             Mathf.Clamp(TurnerSimulatorRight, 0f, 1f);
             if (Input.GetKey(KeyCode.O))
@@ -408,7 +491,7 @@ public class Player : MonoBehaviour {
                     HUDWeapon.Animate(0f);
             }
                
-               
+            */   
             
             /*
             if (myController.GetButton(5) || myController.GetButton(6))
@@ -417,21 +500,7 @@ public class Player : MonoBehaviour {
             }
              */
         }
-        /*
-
-        myController.CheckSlidersTurners();
-        myController.CheckAccelerator();
-        myController.CheckButtons();
-  
-        //LeftThruster = myController.GetSlider(0);
-       // RightThruster = myController.GetSlider(1);
-
-
-        yRot = -(myController.yAcc) * RotationAngle;
-        xRot = myController.xAcc * RotationAngle;
-        transform.Rotate(Vector3.up, Time.deltaTime * yRot * RotationSpeed/2);
-        transform.Rotate(Vector3.right, Time.deltaTime * xRot * RotationSpeed);
-         */
+        
 
        
          
@@ -446,7 +515,7 @@ public class Player : MonoBehaviour {
             // Retrieve input.  Note the use of GetAxisRaw (), which in this case helps responsiveness of the controls.
             // GetAxisRaw () bypasses Unity's builtin control smoothing.
             Thruster = LeftThruster + RightThruster;
-            Turn = LeftThruster - RightThruster;
+            //Turn = LeftThruster - RightThruster;
 
             //Use the MovementSettings class to determine which drag constant should be used for the positional movement.
             //Remember the MovementSettings class is a helper class we defined ourselves. See the top of this script.
