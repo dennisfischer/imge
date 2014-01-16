@@ -48,6 +48,7 @@ public class MainMenu : MonoBehaviour {
 
     void OnGUI()
     {
+        /*
         if (GUI.Button(new Rect(10, 10, 100, 50), "1 Player"))
         {
             GameManager.Instance.SetPlayerCount(1);
@@ -68,7 +69,7 @@ public class MainMenu : MonoBehaviour {
             GameManager.Instance.SetPlayerCount(4);
             contr.TurnOff();
             Application.LoadLevel(1);
-        }
+        }*/
         
     }
 }

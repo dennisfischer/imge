@@ -253,6 +253,7 @@ public class AI : MonoBehaviour {
 
         if (state == PlayerState.Playing && target)
         {
+            float dist = Vector3.Distance(target.transform.position, transform.position);
             // Retrieve input.  Note the use of GetAxisRaw (), which in this case helps responsiveness of the controls.
             // GetAxisRaw () bypasses Unity's builtin control smoothing.
            
@@ -269,7 +270,8 @@ public class AI : MonoBehaviour {
             // your setup won't break.
 
             //rigidbody.AddRelativeTorque(Vector3.up * Turn);
-            rigidbody.AddRelativeForce(Vector3.forward * Thruster * positionalMovement.positiveAcceleration);
+            if(dist > 50)
+                 rigidbody.AddRelativeForce(Vector3.forward * Thruster * positionalMovement.positiveAcceleration);
             
 
         }
